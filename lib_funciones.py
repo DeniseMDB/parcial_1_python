@@ -76,9 +76,9 @@ def indice_min_max(lista_jugadores: list[dict], key: str, modo: str) -> int:
     """
     La función devuelve el índice del valor mínimo o máximo en una
     lista de diccionarios según una clave y modo de ordenamiento especificados.
-    Recibe: una lista de diccionarios que representan héroes
+    Recibe: una lista de diccionarios que representan jugadores
     El parámetro "key" es una cadena que representa la clave del diccionario en la lista
-    de héroes que se utilizará para determinar el valor mínimo o máximo.
+    de jugadores que se utilizará para determinar el valor mínimo o máximo.
     El parámetro "modo" es una cadena que especifica el modo de operación para la función.
     Puede tomar dos valores: "asc" o "desc". Si se pasa "asc",
     la función encontrará el índice del diccionario en la lista con el valor más alto para la clave dada.
@@ -96,12 +96,12 @@ def indice_min_max(lista_jugadores: list[dict], key: str, modo: str) -> int:
 
 def sort_asc_desc(lista_jugadores: list, key: str, modo: str)->list:
     """
-    La función ordena una lista de héroes en orden ascendente o descendente según una clave especificada.
-    Recibe una lista de diccionarios que representan héroes, donde cada diccionario contiene información sobre un héroe como nombre, poder y edad.
+    La función ordena una lista de jugadores en orden ascendente o descendente según una clave especificada.
+    Recibe una lista de diccionarios que representan jugadores, donde cada diccionario contiene información sobre un héroe como nombre, poder y edad.
     El parámetro "key" es una cadena que representa el atributo del objeto héroe que se utilizará para ordenar la lista.
     "modo" es un parámetro de cadena que determina el modo de ordenamiento.
     Puede tener dos posibles valores: "asc" para orden ascendente o "desc" para orden descendente.
-    Retorna una lista ordenada de héroes basada en la clave y el modo especificados.
+    Retorna una lista ordenada de jugadores basada en la clave y el modo especificados.
     """
     lista_copia = lista_jugadores.copy()
     for i in range(len(lista_jugadores)):
