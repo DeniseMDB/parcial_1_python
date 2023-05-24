@@ -62,15 +62,55 @@ def buscar_nombre_logros(lista_jugadores: list[dict], patron_regex: str) -> list
         cadena_logros = ""
         lista_nombre_jugadores = []
         for jugador in lista_jugadores:
-            if re.match(patron_regex, jugador["nombre"]):
+            if re.match(patron_regex, jugador["nombre"]): #mejorar con search
                 logros = jugador["logros"]
             for logro in logros:
                 cadena_logros += "{0}\n".format(logro)
-            return cadena_logros
+            print(cadena_logros)
+            return logros
 
-            # lista_nombre_jugadores.append(jugadores["nombre"])
-        # for nombre in lista_nombre_jugadores:
-        #     if re.match(patron_regex, nombre):
+#5 - Calcular y mostrar el promedio de puntos por partido de todo el equipo del Dream Team,
+# ordenado por nombre de manera ascendente.
 
-            
-print(buscar_nombre_logros(lista_jugadores, "Michael Jordan"))
+def indice_min_max(lista_jugadores: list[dict], key: str, modo: str) -> int:
+    """
+    La función devuelve el índice del valor mínimo o máximo en una
+    lista de diccionarios según una clave y modo de ordenamiento especificados.
+    Recibe: una lista de diccionarios que representan héroes
+    El parámetro "key" es una cadena que representa la clave del diccionario en la lista
+    de héroes que se utilizará para determinar el valor mínimo o máximo.
+    El parámetro "modo" es una cadena que especifica el modo de operación para la función.
+    Puede tomar dos valores: "asc" o "desc". Si se pasa "asc",
+    la función encontrará el índice del diccionario en la lista con el valor más alto para la clave dada.
+    Si se pasa "desc", la función encontrará el índice del diccionario con el valor más bajo para la clave dada.
+    Retorna un entero que representa el índice del diccionario en la lista de entrada 
+    """
+    if lista_jugadores:
+        i_max_min = 0
+        for i in range(len(lista_jugadores)):
+            if(modo =="asc" and (lista_jugadores[i][key] > lista_jugadores[i_max_min][key])):
+                i_max_min = i
+            elif(modo == "desc" and (lista_jugadores[i][key] < lista_jugadores[i_max_min][key])):
+                i_max_min = i
+    return i_max_min
+
+def sort_asc_desc(lista_jugadores: list, key: str, modo: str)->list:
+    """
+    La función ordena una lista de héroes en orden ascendente o descendente según una clave especificada.
+    Recibe una lista de diccionarios que representan héroes, donde cada diccionario contiene información sobre un héroe como nombre, poder y edad.
+    El parámetro "key" es una cadena que representa el atributo del objeto héroe que se utilizará para ordenar la lista.
+    "modo" es un parámetro de cadena que determina el modo de ordenamiento.
+    Puede tener dos posibles valores: "asc" para orden ascendente o "desc" para orden descendente.
+    Retorna una lista ordenada de héroes basada en la clave y el modo especificados.
+    """
+    lista_copia = lista_jugadores.copy()
+    for i in range(len(lista_jugadores)):
+        lista_aux = lista_copia[i:]
+        i_min_max = indice_min_max(lista_aux, key, modo) + i
+        lista_copia[i], lista_copia[i_min_max] = lista_copia[i_min_max], lista_copia[i]
+    return lista_copia
+
+
+def calcular_promedio_ordenar_nombres(lista_jugadores: list[dict]):
+    pass
+
