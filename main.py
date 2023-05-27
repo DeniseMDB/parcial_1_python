@@ -36,7 +36,7 @@ def print_menu():
 
 def ejercicios_examen():
     ruta_json = r'C:\\Users\\Denise\\Documents\\1 Cuatri\\Programacion_1\\parcial_1\\dt.json'
-    ruta_csv = ""
+    nombre_archivo = ""
     lista_jugadores = lib.leer_archivo(ruta_json)
     lista_copia = []
     while True:
@@ -59,13 +59,15 @@ def ejercicios_examen():
                 indice = lib.validar_lista(lista_copia, indice)
                 lib.imprimir_mensaje(accion, "Success")
                 jugador = lista_copia[indice]
+                nombre_jugador = (jugador["nombre"]).replace(" ","_")
                 archivo_estadisticas = lib.mostrar_estadisticas_indice(jugador)
                 lib.limpiar_consola()
             case 3:
-                accion = "Exito"
+                accion = "El archivo Estadisticas_{0}.csv ha sido creado.".format(nombre_jugador)
                 lista_copia = lista_jugadores.copy()
                 lib.imprimir_mensaje(accion, "Success")
-                lib.exportar_csv(archivo_estadisticas,jugador)
+                nombre_archivo = "C:\\Users\\Denise\\Documents\\1 Cuatri\\Programacion_1\\parcial_1\\Estadisticas_{0}.csv".format(nombre_jugador)
+                lib.exportar_csv(archivo_estadisticas,nombre_archivo)
                 lib.limpiar_consola()
             case 4:
                 accion = "Logros del jugador elegido :"
@@ -83,7 +85,8 @@ def ejercicios_examen():
                 accion = "Promedio puntos por partido y lista ordenada: "
                 lista_copia = lista_jugadores.copy()
                 lib.imprimir_mensaje(accion, "Success")
-                lib.mostrar_promedio_y_orden_asc(lista_copia)
+                lista_ordenada = lib.sort_asc_desc(lista_copia, "nombre", "asc")
+                lib.mostrar_promedio_y_orden_asc(lista_ordenada,"promedio_puntos_por_partido")
                 lib.limpiar_consola()
             case 6:
                 lista_copia = lista_jugadores.copy()
@@ -184,9 +187,22 @@ def ejercicios_examen():
                 else:
                     lib.imprimir_mensaje("El numero ingresado es mayor que el mayor valor a comparar","Error" )
             case 16:
-                pass
+                accion = "Promedio puntos por partido excluyendo menor valor: "
+                lista_copia = lista_jugadores.copy()
+                lib.imprimir_mensaje(accion, "Success")
+                lista_ordenada = lib.sort_asc_desc(lista_copia, "estadisticas", "asc", "promedio_puntos_por_partido")
+                lib.calcular_promedio(lista_ordenada[1:], "promedio_puntos_por_partido")
+                lib.limpiar_consola()
             case 17:
-                pass
+                accion = "El jugador con la mayor cantidad de logros obtenidos es: "
+                lista_copia = lista_jugadores.copy()
+                lib.imprimir_mensaje(accion, "Success")
+                jugador_mayor_logro = lib.comparacion_logros(lista_copia)
+                cadena_logros = ""
+                for logro in jugador_mayor_logro["logros"]:
+                    cadena_logros += "{0}\n".format(logro)
+                mensaje = "{0} con {1} logros:\n{2}".format(jugador_mayor_logro["nombre"], len(jugador_mayor_logro["logros"]), cadena_logros)
+                print(mensaje)
             case 18:
                 lista_copia = lista_jugadores.copy()
                 key = "porcentaje_tiros_triples"
@@ -208,9 +224,28 @@ def ejercicios_examen():
                 print(lib.mostrar_jugador_por_clave_estadistica(lista_copia, key))
                 lib.limpiar_consola()
             case 20:
-                pass
+                lista_copia = lista_jugadores.copy()
+                key = "porcentaje_tiros_de_campo"
+                valor_a_comparar = input("Ingrese un valor ")
+                valor_a_comparar = lib.validar_numero(valor_a_comparar,"[1-9]{1,2}")
+                if lib.validar_comparacion_estadistica(lista_copia, key, valor_a_comparar):
+                    lista_comparacion = lib.comparacion_valores_estadisticas(lista_copia,key, valor_a_comparar)
+                    lista_ordenada = lib.sort_asc_desc(lista_comparacion, "posicion", "asc")
+                    accion = "Los jugadores que han promediado más de {0} en porcentaje de tiros de campo son: ".format(valor_a_comparar)
+                    lib.imprimir_mensaje(accion,"Success" )
+                    lib.mostrar_jugador_estadisticas(lista_ordenada, key)
+                    lib.limpiar_consola()
+                else:
+                    lib.imprimir_mensaje("El numero ingresado es mayor que el mayor valor a comparar","Error" )
             case 21:
-                pass
+                accion = "Se ha creado el archivo de Ranking de estadisticas"
+                lista_copia = lista_jugadores.copy()
+                lib.imprimir_mensaje(accion,"Success" )
+                lista_diccionarios = lib.lista_dict(lista_jugadores)
+                archivo_csv = lib.generar_data_csv(lista_diccionarios)
+                nombre_archivo = "C:\\Users\\Denise\\Documents\\1 Cuatri\\Programacion_1\\parcial_1\\Ranking_de_estadisticas.csv"
+                lib.exportar_csv(archivo_csv,nombre_archivo)
+                lib.limpiar_consola()
             case _:
                 # Opción no reconocida, no se realiza ninguna acción
                 pass
