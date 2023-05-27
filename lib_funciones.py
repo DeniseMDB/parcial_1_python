@@ -2,13 +2,13 @@ import json
 import re
 import os
 
-ruta = r'C:\\Users\\Denise\\Documents\\1 Cuatri\\Programacion_1\\parcial_1\\dt.json'
+# ruta = r'C:\\Users\\Denise\\Documents\\1 Cuatri\\Programacion_1\\parcial_1\\dt.json'
 
 def leer_archivo(path: str) -> list:
     with open(path, 'r') as file:
         return json.load(file)["jugadores"]
     
-lista_jugadores = leer_archivo(ruta)
+# lista_jugadores = leer_archivo(ruta)
 
 _b_red: str = '\033[41m'
 _b_green: str = '\033[42m'
@@ -146,20 +146,27 @@ def mostrar_estadisticas_indice(jugador: dict) -> None:
 
 #3 - Guardar estadisticas en formato CSV
 
-def exportar_csv(cadena: str, jugador: dict):
-    nombre_jugador = (jugador["nombre"]).replace(" ","_")
-    nombre_archivo = "C:\\Users\\Denise\\Documents\\1 Cuatri\\Programacion_1\\parcial_1\\Estadisticas_{0}.csv".format(nombre_jugador)
+def exportar_csv(cadena: str, nombre_archivo: str):
     with open(nombre_archivo, 'w') as archivo:
         archivo.writelines(cadena)
-        print("El archivo Estadisticas_{0}.csv ha sido creado.".format(nombre_jugador))
-
-#archivo = mostrar_estadisticas_indice(lista_jugadores[0])
-#exportar_csv(archivo,lista_jugadores[0])
+        
 
 
 #4 - Buscar jugador por nombre y mostrar sus logros
 
 def buscar_nombre_logros(lista_jugadores: list[dict], patron_regex: str) -> list:
+    """
+    This function searches for a player's achievements based on a regular expression pattern in a list
+    of dictionaries containing player information.
+    
+    :param lista_jugadores: A list of dictionaries representing players and their achievements
+    :type lista_jugadores: list[dict]
+    :param patron_regex: A regular expression pattern used to search for a player's name in the list of
+    players
+    :type patron_regex: str
+    :return: a list of logros (achievements) of a jugador (player) whose name matches the given regex
+    pattern.
+    """
     if lista_jugadores:
         lista_copia = lista_jugadores.copy()
         encontrado = False
@@ -177,44 +184,70 @@ def buscar_nombre_logros(lista_jugadores: list[dict], patron_regex: str) -> list
 #5 - Calcular y mostrar el promedio de puntos por partido de todo el equipo del Dream Team,
 # ordenado por nombre de manera ascendente.
 
-def indice_min_max(lista_jugadores: list[dict], key: str, modo: str) -> int:
+def indice_min_max(lista_jugadores: list[dict], key: str, modo: str, key_2:str=1) -> int:
     """
-    La función devuelve el índice del valor mínimo o máximo en una
-    lista de diccionarios según una clave y modo de ordenamiento especificados.
-    Recibe: una lista de diccionarios que representan jugadores
-    El parámetro "key" es una cadena que representa la clave del diccionario en la lista
-    de jugadores que se utilizará para determinar el valor mínimo o máximo.
-    El parámetro "modo" es una cadena que especifica el modo de operación para la función.
-    Puede tomar dos valores: "asc" o "desc". Si se pasa "asc",
-    la función encontrará el índice del diccionario en la lista con el valor más alto para la clave dada.
-    Si se pasa "desc", la función encontrará el índice del diccionario con el valor más bajo para la clave dada.
-    Retorna un entero que representa el índice del diccionario en la lista de entrada 
+    The function returns the index of the minimum or maximum value in a list of dictionaries based on a
+    specified key and sorting mode.
+    
+    :param lista_jugadores: A list of dictionaries representing players and their attributes
+    :type lista_jugadores: list[dict]
+    :param key: The key is a string that represents the dictionary key that will be used to compare the
+    values of the elements in the list
+    :type key: str
+    :param modo: "asc" or "desc", indicating whether the function should find the index of the minimum
+    or maximum value in the list
+    :type modo: str
+    :param key_2: The optional second key to use for comparison when sorting the list of dictionaries.
+    If it is not provided, the function will only use the first key for comparison, defaults to 1
+    :type key_2: str (optional)
+    :return: an integer, which represents the index of the player with the minimum or maximum value of a
+    given key in a list of dictionaries.
     """
     if lista_jugadores:
         i_max_min = 0
-        for i in range(len(lista_jugadores)):
-            if(modo =="asc" and (lista_jugadores[i][key] < lista_jugadores[i_max_min][key])):
-                i_max_min = i
-            elif(modo == "desc" and (lista_jugadores[i][key] > lista_jugadores[i_max_min][key])):
-                i_max_min = i
+        if key_2 != 1:
+            for i in range(len(lista_jugadores)):
+                if(modo =="asc" and (lista_jugadores[i][key][key_2] < lista_jugadores[i_max_min][key][key_2])):
+                    i_max_min = i
+                elif(modo == "desc" and (lista_jugadores[i][key][key_2] > lista_jugadores[i_max_min][key][key_2])):
+                    i_max_min = i
+        else:
+            for i in range(len(lista_jugadores)):
+                if(modo =="asc" and (lista_jugadores[i][key] < lista_jugadores[i_max_min][key])):
+                    i_max_min = i
+                elif(modo == "desc" and (lista_jugadores[i][key] > lista_jugadores[i_max_min][key])):
+                    i_max_min = i
     return i_max_min
 
-def sort_asc_desc(lista_jugadores: list, key: str, modo: str)->list:
+def sort_asc_desc(lista_jugadores: list, key: str, modo: str, key_2: str=1)->list:
     """
-    La función ordena una lista de jugadores en orden ascendente o descendente según una clave especificada.
-    Recibe una lista de diccionarios que representan jugadores, donde cada diccionario contiene información sobre un héroe como nombre, poder y edad.
-    El parámetro "key" es una cadena que representa el atributo del objeto héroe que se utilizará para ordenar la lista.
-    "modo" es un parámetro de cadena que determina el modo de ordenamiento.
-    Puede tener dos posibles valores: "asc" para orden ascendente o "desc" para orden descendente.
-    Retorna una lista ordenada de jugadores basada en la clave y el modo especificados.
+    The function sorts a list of players based on a given key and mode, either in ascending or
+    descending order.
+    
+    :param lista_jugadores: A list of dictionaries representing players
+    :type lista_jugadores: list
+    :param key: The key parameter is a string that represents the attribute of the player object that
+    will be used to sort the list. For example, if the player object has attributes such as "name",
+    "age", "score", etc., the key parameter would be set to one of these attributes
+    :type key: str
+    :param modo: "modo" is a string parameter that determines the sorting mode. It can take two values:
+    "asc" for ascending order and "desc" for descending order. This parameter is used in the
+    "indice_min_max" function to determine whether to find the minimum or maximum value of the key in
+    the
+    :type modo: str
+    :param key_2: The parameter key_2 is a string that represents the secondary key to be used in case
+    of ties when sorting the list. It has a default value of 1, which means that if no value is provided
+    for key_2, the function will use the index 1 of the list as the, defaults to 1
+    :type key_2: str (optional)
+    :return: a sorted list of players based on the specified key and mode.
     """
+    
     lista_copia = lista_jugadores.copy()
     for i in range(len(lista_jugadores)):
         lista_aux = lista_copia[i:]
-        i_min_max = indice_min_max(lista_aux, key, modo) + i
+        i_min_max = indice_min_max(lista_aux, key, modo, key_2) + i
         lista_copia[i], lista_copia[i_min_max] = lista_copia[i_min_max], lista_copia[i]
     return lista_copia
-
 
 def calcular_promedio(lista_jugadores: list[dict], key: str) -> float:
     """
@@ -236,15 +269,12 @@ def calcular_promedio(lista_jugadores: list[dict], key: str) -> float:
     estadisticas = {}
     for jugador in lista_jugadores:
         estadisticas = jugador["estadisticas"]
-        for clave_promedio,valor_promedio in estadisticas.items():
-            clave_promedio = key
-            suma_promedios += valor_promedio
-            contador += 1
-    promedio = round(suma_promedios % contador, 2)
+        suma_promedios += estadisticas[key]
+    promedio = round((suma_promedios/len(lista_jugadores)), 2)
     print("El promedio de \"{0}\" de todo el equipo es de: {1}".format(formatear_estadistica(lista_jugadores, key) ,promedio))
     return promedio
 
-def mostrar_promedio_y_orden_asc(lista_ordenada: list[dict]) -> None:
+def mostrar_promedio_y_orden_asc(lista_ordenada: list[dict], modo: str) -> None:
     """
     The function takes a list of dictionaries containing player statistics, calculates their average
     points per game, sorts the list alphabetically by player name, and prints the sorted list with their
@@ -254,16 +284,16 @@ def mostrar_promedio_y_orden_asc(lista_ordenada: list[dict]) -> None:
     alphabetical order by name
     :type lista_ordenada: list[dict]
     """
-    calcular_promedio(lista_ordenada, "promedio_puntos_por_partido")
+    calcular_promedio(lista_ordenada, modo)
     lista_promedios_ordenados = []
     for jugador in lista_ordenada:
         dict_estadisticas = jugador["estadisticas"]
         for clave,valor in dict_estadisticas.items():
-            if clave == "promedio_puntos_por_partido":
+            if clave == modo:
                 lista_promedios_ordenados.append(valor)
     print("La lista ordenada de jugadores segun su orden alfabetico ascendente es: ")
     for i in range(len(lista_ordenada)):
-        mensaje = "{0}. {1} - {2} - {3}: {4}".format(i,lista_ordenada[i]["nombre"],lista_ordenada[i]["posicion"],formatear_estadistica(lista_ordenada,"promedio_puntos_por_partido"), lista_promedios_ordenados[i])
+        mensaje = "{0}. {1} - {2} - {3}: {4}".format(i,lista_ordenada[i]["nombre"],lista_ordenada[i]["posicion"],formatear_estadistica(lista_ordenada,modo), lista_promedios_ordenados[i])
         print(mensaje)
     
 #6 - Permitir al usuario ingresar el nombre de un jugador y mostrar si ese jugador es miembro del Salón de la Fama del Baloncesto.
@@ -312,7 +342,7 @@ def jugador_mayor_estadistica(lista_jugadores: list[dict], clave_estadisticas: s
         jugador_mayor_clave = lista_ord_asc[-1]
         return jugador_mayor_clave
 
-def mostrar_jugador_por_clave_estadistica(lista_jugadores: list[dict],clave_estadisticas: str ) -> None:
+def mostrar_jugador_por_clave_estadistica(lista_jugadores: list[dict], clave_estadisticas: str ) -> None:
     """
     This function takes a list of dictionaries representing players and a key for a statistic, finds the
     player with the highest value for that statistic, and returns a formatted string with information
@@ -337,6 +367,21 @@ def mostrar_jugador_por_clave_estadistica(lista_jugadores: list[dict],clave_esta
 
                     
 def comparacion_valores_estadisticas(lista_jugadores: list[dict], key: str, valor_comparacion: int) -> list[dict]:
+    """
+    This function takes a list of dictionaries representing players and returns a new list of players
+    whose statistics for a given key are greater than a specified value.
+    
+    :param lista_jugadores: A list of dictionaries representing players and their statistics
+    :type lista_jugadores: list[dict]
+    :param key: The key parameter is a string that represents the specific statistic that we want to
+    compare for each player. For example, it could be "rebotes" (rebounds) or "asistencias" (assists)
+    :type key: str
+    :param valor_comparacion: An integer value that will be used to compare against the value of the key
+    in the "estadisticas" dictionary of each player in the "lista_jugadores" list
+    :type valor_comparacion: int
+    :return: a list of dictionaries containing information about players whose statistical value for a
+    given key is greater than a specified comparison value.
+    """
     if lista_jugadores:
         jugadores_mayores = []
         lista_copia = lista_jugadores.copy()
@@ -348,6 +393,17 @@ def comparacion_valores_estadisticas(lista_jugadores: list[dict], key: str, valo
     
 
 def mostrar_jugador_estadisticas(lista_jugadores: list[dict], key:str) -> None:
+    """
+    This function takes a list of dictionaries representing players and a key, and prints out each
+    player's name, position, and the value of the specified key in their statistics dictionary.
+    
+    :param lista_jugadores: A list of dictionaries representing players and their statistics
+    :type lista_jugadores: list[dict]
+    :param key: The "key" parameter is a string that represents the specific statistic that we want to
+    display for each player. It is used to access the corresponding value in the "estadisticas"
+    dictionary of each player
+    :type key: str
+    """
     if lista_jugadores:
         i = 0
         lista_copia = lista_jugadores.copy()
@@ -359,6 +415,21 @@ def mostrar_jugador_estadisticas(lista_jugadores: list[dict], key:str) -> None:
         
 
 def validar_comparacion_estadistica(lista_jugadores: list[dict], key: str, valor_comparacion: int) -> bool:
+    """
+    This function validates if the highest value of a specific key in a list of dictionaries is greater
+    than or equal to a given value.
+    
+    :param lista_jugadores: A list of dictionaries representing players and their statistics
+    :type lista_jugadores: list[dict]
+    :param key: The key is a string that represents the statistic that we want to compare. For example,
+    if we want to compare the number of goals scored by each player, the key would be "goals"
+    :type key: str
+    :param valor_comparacion: The value to compare the key's value against in the function. It is an
+    integer
+    :type valor_comparacion: int
+    :return: a boolean value (True or False) depending on whether the highest value of a given key in a
+    list of dictionaries is greater than or equal to a given comparison value.
+    """
     if lista_jugadores:
         lista_copia = lista_jugadores.copy()
         dict_mayor_key_estadistica = jugador_mayor_estadistica(lista_jugadores, key)
@@ -368,6 +439,105 @@ def validar_comparacion_estadistica(lista_jugadores: list[dict], key: str, valor
             return False
 
 
+def comparacion_logros(lista_jugadores: list[dict]) -> dict:
+    """
+    The function takes a list of dictionaries representing players and returns the player with the most
+    achievements.
+    
+    :param lista_jugadores: a list of dictionaries representing players, where each dictionary contains
+    information about a player, including their name and a list of their achievements or "logros"
+    :type lista_jugadores: list[dict]
+    :return: a dictionary that represents the player with the most achievements in a list of players.
+    """
+    if lista_jugadores:
+        lista_copia = lista_jugadores.copy()
+        jugador_mayor_logro = lista_copia[0]
+        for jugador in lista_copia:
+            if len(jugador["logros"]) > len(jugador_mayor_logro["logros"]):
+                jugador_mayor_logro = jugador
+        return jugador_mayor_logro
 
 
 
+def ranking_por_estadistica(lista_jugadores: list[dict], estadistica_ranking: str, regex_nombre: str) -> int:
+    """
+    This function takes a list of players with their statistics, a specific statistic to rank by, and a
+    regular expression for a player's name, and returns the ranking of that player based on the
+    specified statistic.
+    
+    :param lista_jugadores: A list of dictionaries representing players and their statistics
+    :type lista_jugadores: list[dict]
+    :param estadistica_ranking: The parameter "estadistica_ranking" is a string that represents the
+    specific statistic by which the players will be ranked. For example, it could be "puntos" (points),
+    "rebotes" (rebounds), or "asistencias" (assists)
+    :type estadistica_ranking: str
+    :param regex_nombre: The parameter "regex_nombre" is a string that contains a regular expression
+    used to match the name of a player in the list of players. The function uses this regular expression
+    to find the player's name in the list and determine their ranking based on the specified statistic
+    :type regex_nombre: str
+    :return: the ranking index (position) of a player in a list of players based on a specific statistic
+    and a regular expression for the player's name.
+    """
+    if lista_jugadores:
+        lista_copia = lista_jugadores.copy()
+        ranking_stats = sort_asc_desc(lista_copia, "estadisticas", "desc", estadistica_ranking)
+        i = 0 
+        for i in range(len(ranking_stats)):
+            if regex_nombre == ranking_stats[i]["nombre"]:
+                ranking_indice = i
+                break
+        return ranking_indice+1
+    
+
+def crear_dict_estadistica_jugador(lista_jugadores: list[dict],regex_nombre: str) -> dict:
+    """
+    This function creates a dictionary with statistics for a specific player from a list of players,
+    based on a regular expression for the player's name.
+    
+    :param lista_jugadores: A list of dictionaries representing basketball players and their statistics
+    :type lista_jugadores: list[dict]
+    :param regex_nombre: A regular expression string used to match the name of the player in the list of
+    players
+    :type regex_nombre: str
+    :return: a dictionary with the statistics of a player whose name matches a given regular expression,
+    based on a list of players' dictionaries. The dictionary includes the player's name, total points
+    ranking, total rebounds ranking, total assists ranking, and total steals ranking.
+    """
+    if lista_jugadores:
+        lista_copia = lista_jugadores.copy()
+        dict_jugador = {}
+        for jugador in lista_copia:
+            if regex_nombre in jugador["nombre"]:
+                dict_jugador["nombre"] = jugador["nombre"]
+                dict_jugador["ranking_puntos_totales"] = ranking_por_estadistica(lista_copia,"puntos_totales",jugador["nombre"])
+                dict_jugador["rebotes_totales"] = ranking_por_estadistica(lista_copia,"rebotes_totales",jugador["nombre"])
+                dict_jugador["asistencias_totales"] = ranking_por_estadistica(lista_copia,"asistencias_totales",jugador["nombre"])
+                dict_jugador["robos_totales"] = ranking_por_estadistica(lista_copia,"robos_totales",jugador["nombre"])
+        return dict_jugador
+
+def lista_dict(lista_jugadores: list) -> list[dict]:
+    """
+    Crea un lista de diccionarios donde cada uno corresponde a un jugador y su ranking
+    """
+    lista_dict = []
+    dic_jugador = {}
+    for jugadores in lista_jugadores:         
+        dic_jugador = crear_dict_estadistica_jugador(lista_jugadores, jugadores["nombre"])
+        lista_dict.append(dic_jugador)
+    return lista_dict
+
+def generar_data_csv(lista_diccionarios):
+    """
+    The function generates a CSV string from a list of dictionaries containing player statistics.
+    
+    :param lista_diccionarios: a list of dictionaries, where each dictionary represents a player and
+    contains their name, total points, total rebounds, total assists, and total steals
+    :return: a string in CSV format that includes the data of the players in the input list of
+    dictionaries. The first row of the CSV contains the headers "Jugador, Puntos, Rebotes, Asistencias,
+    Robos", and each subsequent row contains the data of a player, with their name, total points, total
+    rebounds, total assists, and total steals separated by commas.
+    """
+    cadena_csv = "Jugador, Puntos, Rebotes, Asistencias, Robos"
+    for jugador in lista_diccionarios:
+        cadena_csv += "\n{0}, {1}, {2}, {3}, {4}".format(jugador['nombre'],jugador['ranking_puntos_totales'],jugador['rebotes_totales'],jugador['asistencias_totales'],jugador['robos_totales'])
+    return cadena_csv
