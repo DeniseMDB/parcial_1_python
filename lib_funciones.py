@@ -2,15 +2,12 @@ import json
 import re
 import os
 
-# ruta = r'C:\\Users\\Denise\\Documents\\1 Cuatri\\Programacion_1\\parcial_1\\dt.json'
 
 def leer_archivo(path: str) -> list:
     with open(path, 'r') as file:
         return json.load(file)["jugadores"]
     
-# lista_jugadores = leer_archivo(ruta)
-
-_b_red: str = '\033[41m'
+_b_red: str = '\033[41m'  
 _b_green: str = '\033[42m'
 _b_blue: str = '\033[44m'
 _f_white: str = '\033[37m'
@@ -18,10 +15,12 @@ _no_color: str = '\033[0m'
 
 def imprimir_mensaje(mensaje: str, tipo_mensaje: str) -> None:
     """
-    This function prints a message with a specified type (error, success, or info) in a colored format.
-    :param mensaje: a string containing the message to be printed
-    :param tipo_mensaje: The parameter "tipo_mensaje" is a string that represents the type of message
-    that will be printed. It can be "Error", "Success", or "Info"
+    La función imprimir_mensaje imprime un mensaje en la consola con un formato específico según el tipo de mensaje.
+    Recibe:
+        El mensaje que se desea imprimir.
+        El tipo de mensaje, que puede ser "Error", "Success" o "Info".
+    Retorna:
+        No devuelve ningún valor, simplemente imprime el mensaje en la consola.
     """
     match tipo_mensaje.strip().capitalize():
         case 'Error':
@@ -29,10 +28,17 @@ def imprimir_mensaje(mensaje: str, tipo_mensaje: str) -> None:
         case 'Success':
             print(f'{_b_green}{_f_white}>{mensaje}{_no_color}')
         case 'Info':
-            print(f'{_b_blue}{_f_white}> Information: {mensaje}{_no_color}')
+            print(f'{_b_blue}{_f_white}>{mensaje}{_no_color}')
 
-def validar_numero(respuesta: str, patron_regex: str)-> int:  #valida opcion numerica de menu
-    if respuesta: #evalua si es vacio o no, false vacio
+def validar_numero(respuesta: str, patron_regex: str)-> int:
+    """
+    Valida una opción numérica de un menú.
+    Recibe:
+        respuesta (str): La respuesta ingresada por el usuario.
+        patron_regex (str): El patrón regular utilizado para validar la respuesta.
+    Retorna el número validado si cumple con el patrón, de lo contrario, devuelve -1.
+    """
+    if respuesta: 
         if re.match(patron_regex, respuesta):
             return int(respuesta)
         return -1
@@ -54,24 +60,15 @@ def limpiar_consola() -> None:
     if os.name in ['ce', 'nt', 'dos']: os.system("cls")
     else: os.system("clear")
 
-def validar_respuesta():
-    pass
-
 
 def formatear_estadistica(lista_jugadores: list[dict], clave_a_formatear: str) -> str:
     """
-    The function takes a list of dictionaries containing player statistics and a key to format, and
-    returns the formatted key if it exists in the dictionaries, otherwise it returns -1.
-    
-    :param lista_jugadores: A list of dictionaries representing players and their statistics
-    :type lista_jugadores: list[dict]
-    :param clave_a_formatear: The parameter "clave_a_formatear" is a string that represents the key of a
-    dictionary that will be formatted. The function will check if this key exists in the "estadisticas"
-    dictionary of each player in the "lista_jugadores" list. If it exists, the function
-    :type clave_a_formatear: str
-    :return: If the `clave_a_formatear` is found in the `estadisticas` dictionary of any player in the
-    `lista_jugadores`, the function will return the formatted version of the key (with underscores
-    replaced by spaces and capitalized). If the key is not found, the function will return -1.
+    Formatea una clave de estadística en un formato legible.
+    Recibe:
+        lista_jugadores (list[dict]): Una lista de diccionarios que contiene información de los jugadores.
+        clave_a_formatear (str): La clave de estadística a formatear.
+    Retorna:
+        str: La clave de estadística formateada si existe en los diccionarios de jugadores, de lo contrario, devuelve -1.
     """
     for jugador in lista_jugadores:
         dict_estadistica = jugador["estadisticas"]
@@ -83,18 +80,14 @@ def formatear_estadistica(lista_jugadores: list[dict], clave_a_formatear: str) -
 
 def formatear_jugador(jugador: dict, dict_estadisticas: dict, clave: str) -> str:
     """
-    This function takes a dictionary of a player's statistics, a dictionary of all players' statistics,
-    and a key to format the message and returns a formatted string with the player's name, position, and
-    the specified statistic.
-    
-    :param jugador: A dictionary containing information about a player, including their name and
-    position
-    :type jugador: dict
-    :param dict_estadisticas: A dictionary containing the statistics of a player
-    :type dict_estadisticas: dict
-    :param clave: The parameter "clave" is a string that represents a key in the dictionary
-    "dict_estadisticas". It is used to retrieve a specific statistic for a player
-    :type clave: str
+    Formatea los datos del jugador en una cadena que incluye el nombre, la posición y la estadística deseada.
+    Recibe:
+        jugador (dict): Un diccionario que contiene la información del jugador.
+        dict_estadisticas (dict): Un diccionario que contiene las estadísticas del jugador.
+        clave (str): La clave de estadística específica a formatear.
+    Retorna:
+        str: Una cadena con los datos del jugador en el siguiente formato: "{nombre} - {posicion} - {clave formateada}: {valor}".
+        Si el jugador no existe, devuelve -1.
     """
     if jugador:
         for key, value in dict_estadisticas.items():
@@ -107,11 +100,11 @@ def formatear_jugador(jugador: dict, dict_estadisticas: dict, clave: str) -> str
 
 def mostrar_lista_jugadores(lista_jugadores: list[dict]) -> None:
     """
-    The function displays a list of players with their names and positions.
-    
-    :param lista_jugadores: A list of dictionaries representing players in a sports team. Each
-    dictionary contains information about a player, including their name and position
-    :type lista_jugadores: list[dict]
+    Muestra una lista de jugadores en el siguiente formato: "{índice}. {nombre} - {posicion}".
+    Recibe:
+        lista_jugadores (list[dict]): Una lista de diccionarios que contiene información de los jugadores.
+    Retorna:
+        None: Esta función no devuelve ningún valor. Muestra la lista de jugadores directamente en la salida.
     """
     if lista_jugadores:
         lista_copia = lista_jugadores.copy()
@@ -129,12 +122,11 @@ def mostrar_lista_jugadores(lista_jugadores: list[dict]) -> None:
 
 def mostrar_estadisticas_indice(jugador: dict) -> None:
     """
-    This function takes a dictionary representing a player and displays their statistics in a formatted
-    way.
-    
-    :param jugador: The parameter "jugador" is a dictionary that represents a player and contains
-    information about their statistics
-    :type jugador: dict
+    Muestra las estadísticas de un jugador en el siguiente formato: "{clave}: {valor}".
+    Recibe:
+        jugador (dict): Un diccionario que contiene la información del jugador, incluyendo las estadísticas.
+    Retorna:
+        None: Esta función no devuelve ningún valor. Muestra las estadísticas del jugador directamente en la salida.
     """
     estadisticas = jugador["estadisticas"]
     mensaje = ""
@@ -146,7 +138,13 @@ def mostrar_estadisticas_indice(jugador: dict) -> None:
 
 #3 - Guardar estadisticas en formato CSV
 
-def exportar_csv(cadena: str, nombre_archivo: str):
+def exportar_csv(cadena: str, nombre_archivo: str) -> None:
+    """
+    Exporta una cadena de texto a un archivo CSV.
+    Recibe:
+        cadena (str): La cadena de texto a exportar.
+        nombre_archivo (str): El nombre del archivo CSV a crear o sobrescribir.
+    """
     with open(nombre_archivo, 'w') as archivo:
         archivo.writelines(cadena)
         
@@ -156,16 +154,13 @@ def exportar_csv(cadena: str, nombre_archivo: str):
 
 def buscar_nombre_logros(lista_jugadores: list[dict], patron_regex: str) -> list:
     """
-    This function searches for a player's achievements based on a regular expression pattern in a list
-    of dictionaries containing player information.
-    
-    :param lista_jugadores: A list of dictionaries representing players and their achievements
-    :type lista_jugadores: list[dict]
-    :param patron_regex: A regular expression pattern used to search for a player's name in the list of
-    players
-    :type patron_regex: str
-    :return: a list of logros (achievements) of a jugador (player) whose name matches the given regex
-    pattern.
+    Busca y devuelve los logros de un jugador cuyo nombre coincide con un patrón de expresión regular.
+    Recibe:
+        lista_jugadores (list[dict]): Una lista de diccionarios que contiene información de los jugadores.
+        patron_regex (str): El patrón de expresión regular a utilizar para buscar el nombre del jugador.
+    Retorna:
+        list: Una lista de logros del jugador cuyo nombre coincide con el patrón de expresión regular.
+            Si no se encuentra ningún jugador con el nombre buscado, se solicita un nuevo patrón al usuario.
     """
     if lista_jugadores:
         lista_copia = lista_jugadores.copy()
@@ -186,23 +181,17 @@ def buscar_nombre_logros(lista_jugadores: list[dict], patron_regex: str) -> list
 
 def indice_min_max(lista_jugadores: list[dict], key: str, modo: str, key_2:str=1) -> int:
     """
-    The function returns the index of the minimum or maximum value in a list of dictionaries based on a
-    specified key and sorting mode.
-    
-    :param lista_jugadores: A list of dictionaries representing players and their attributes
-    :type lista_jugadores: list[dict]
-    :param key: The key is a string that represents the dictionary key that will be used to compare the
-    values of the elements in the list
-    :type key: str
-    :param modo: "asc" or "desc", indicating whether the function should find the index of the minimum
-    or maximum value in the list
-    :type modo: str
-    :param key_2: The optional second key to use for comparison when sorting the list of dictionaries.
-    If it is not provided, the function will only use the first key for comparison, defaults to 1
-    :type key_2: str (optional)
-    :return: an integer, which represents the index of the player with the minimum or maximum value of a
-    given key in a list of dictionaries.
-    """
+    Encuentra el índice del jugador con el valor mínimo o máximo de una clave específica en una lista de jugadores.
+    Recibe:
+        lista_jugadores (list[dict]): Una lista de diccionarios que contiene información de los jugadores.
+        key (str): La clave específica dentro de cada diccionario de jugador para comparar.
+        modo (str): El modo de comparación. Puede ser "asc" (ascendente) o "desc" (descendente).
+        key_2 (str, optional): La segunda clave específica dentro de un diccionario de cada diccionario de jugador para comparar.
+        Por defecto es "1".
+    Retorna:
+        int: El índice del jugador con el valor mínimo o máximo de la clave específica.
+            Si la lista de jugadores está vacía, se devuelve 0.
+    """    
     if lista_jugadores:
         i_max_min = 0
         if key_2 != 1:
@@ -221,27 +210,16 @@ def indice_min_max(lista_jugadores: list[dict], key: str, modo: str, key_2:str=1
 
 def sort_asc_desc(lista_jugadores: list, key: str, modo: str, key_2: str=1)->list:
     """
-    The function sorts a list of players based on a given key and mode, either in ascending or
-    descending order.
-    
-    :param lista_jugadores: A list of dictionaries representing players
-    :type lista_jugadores: list
-    :param key: The key parameter is a string that represents the attribute of the player object that
-    will be used to sort the list. For example, if the player object has attributes such as "name",
-    "age", "score", etc., the key parameter would be set to one of these attributes
-    :type key: str
-    :param modo: "modo" is a string parameter that determines the sorting mode. It can take two values:
-    "asc" for ascending order and "desc" for descending order. This parameter is used in the
-    "indice_min_max" function to determine whether to find the minimum or maximum value of the key in
-    the
-    :type modo: str
-    :param key_2: The parameter key_2 is a string that represents the secondary key to be used in case
-    of ties when sorting the list. It has a default value of 1, which means that if no value is provided
-    for key_2, the function will use the index 1 of the list as the, defaults to 1
-    :type key_2: str (optional)
-    :return: a sorted list of players based on the specified key and mode.
+    Ordena una lista de jugadores en orden ascendente o descendente según una clave específica.
+    Recibe:
+        lista_jugadores (list): Una lista de elementos a ser ordenados.
+        key (str): La clave específica dentro de cada elemento para realizar la comparación.
+        modo (str): El modo de ordenación. Puede ser "asc" (ascendente) o "desc" (descendente).
+        key_2 (str, optional): La segunda clave específica dentro de un diccionario de cada diccionario jugador para comparar.
+        Por defecto es "1".
+    Retorna:
+        list: Una lista ordenada en el modo especificado según la clave específica y, opcionalmente, la segunda clave.
     """
-    
     lista_copia = lista_jugadores.copy()
     for i in range(len(lista_jugadores)):
         lista_aux = lista_copia[i:]
@@ -251,21 +229,14 @@ def sort_asc_desc(lista_jugadores: list, key: str, modo: str, key_2: str=1)->lis
 
 def calcular_promedio(lista_jugadores: list[dict], key: str) -> float:
     """
-    This function calculates the average of a specific statistic for a list of players.
-    
-    :param lista_jugadores: A list of dictionaries representing players and their statistics
-    :type lista_jugadores: list[dict]
-    :param key: The "key" parameter is a string that represents the specific statistic that we want to
-    calculate the average for. It is used to access the corresponding value in the "estadisticas"
-    dictionary for each player in the "lista_jugadores" list
-    :type key: str
-    :return: a float value which represents the average of a specific statistic (indicated by the "key"
-    parameter) for all the players in a given list of dictionaries (indicated by the "lista_jugadores"
-    parameter).
+    Calcula el promedio de una estadística específica para un conjunto de jugadores.
+    Recibe:
+        lista_jugadores (list[dict]): Una lista de diccionarios que contiene información de los jugadores.
+        key (str): La clave de estadística para la cual se calculará el promedio.
+    Retorna:
+        float: El promedio de la estadística especificada para el conjunto de jugadores.
     """
     suma_promedios = 0
-    lista_promedios = []
-    contador = 0
     estadisticas = {}
     for jugador in lista_jugadores:
         estadisticas = jugador["estadisticas"]
@@ -276,13 +247,10 @@ def calcular_promedio(lista_jugadores: list[dict], key: str) -> float:
 
 def mostrar_promedio_y_orden_asc(lista_ordenada: list[dict], modo: str) -> None:
     """
-    The function takes a list of dictionaries containing player statistics, calculates their average
-    points per game, sorts the list alphabetically by player name, and prints the sorted list with their
-    respective average points per game.
-    
-    :param lista_ordenada: A list of dictionaries representing basketball players, sorted in
-    alphabetical order by name
-    :type lista_ordenada: list[dict]
+    Muestra el promedio de una estadística específica y la lista ordenada de jugadores en orden alfabético ascendente.
+    Recibe:
+        lista_ordenada (list[dict]): Una lista ordenada de diccionarios que contiene información de los jugadores.
+        modo (str): La clave de estadística para la cual se calculará el promedio y se ordenará la lista.
     """
     calcular_promedio(lista_ordenada, modo)
     lista_promedios_ordenados = []
@@ -300,17 +268,15 @@ def mostrar_promedio_y_orden_asc(lista_ordenada: list[dict], modo: str) -> None:
 
 def es_miembro_fama (lista_jugadores: list[dict], regex_nombre: str) -> bool:
     """
-    The function checks if a given name is a member of the Basketball Hall of Fame by searching for it
-    in a list of player dictionaries.
-    
-    :param lista_jugadores: a list of dictionaries representing basketball players and their
-    achievements
-    :type lista_jugadores: list[dict]
-    :param regex_nombre: A regular expression string used to search for a player's name in the list of
-    players' dictionaries
-    :type regex_nombre: str
-    :return: a boolean value (True or False) depending on whether the input regex_nombre matches the
-    name of a player in the input lista_jugadores who is a member of the Basketball Hall of Fame.
+    Verifica si un jugador en la lista tiene logros que si se encuentra en el Salón de la Fama del Baloncesto
+    o en el Salón de la Fama del Baloncesto Universitario.
+    Recibe:
+        lista_jugadores (list[dict]): Lista de diccionarios que contiene información de los jugadores.
+        regex_nombre (str): Expresión regular utilizada para buscar el nombre del jugador.
+    Retorna:
+        bool: True si el jugador es miembro del Salón de la Fama del Baloncesto,
+            False si el jugador es miembro del Salón de la Fama del Baloncesto Universitario,
+            None si no se encuentra ningún logro correspondiente.
     """
     logros = buscar_nombre_logros(lista_jugadores, regex_nombre)
     if (re.search(r"\bMiembro del Salon de la Fama del Baloncesto\b", logro) for logro in logros):
@@ -322,15 +288,12 @@ def es_miembro_fama (lista_jugadores: list[dict], regex_nombre: str) -> bool:
 
 def jugador_mayor_estadistica(lista_jugadores: list[dict], clave_estadisticas: str) -> dict:
     """
-    This function takes a list of dictionaries representing players and a key for a statistic, and
-    returns the player with the highest value for that statistic.
-    
-    :param lista_jugadores: A list of dictionaries representing players and their statistics
-    :type lista_jugadores: list[dict]
-    :param clave_estadisticas: a string representing the key of the statistic to be used for comparison
-    :type clave_estadisticas: str
-    :return: a dictionary containing the statistics of the player with the highest value for the
-    specified key in the list of players.
+    Encuentra al jugador con la mayor estadística en una lista de jugadores.
+    Recibe:
+        lista_jugadores (list[dict]): Lista de diccionarios que contiene información de los jugadores.
+        clave_estadisticas (str): La clave de estadística a considerar para encontrar al jugador con la mayor estadística.
+    Retorna:
+        dict: Diccionario que contiene la información de las estadisticas del jugador con la mayor estadística.
     """
     if lista_jugadores:
         lista_copia_jugadores = lista_jugadores.copy()
@@ -344,19 +307,12 @@ def jugador_mayor_estadistica(lista_jugadores: list[dict], clave_estadisticas: s
 
 def mostrar_jugador_por_clave_estadistica(lista_jugadores: list[dict], clave_estadisticas: str ) -> None:
     """
-    This function takes a list of dictionaries representing players and a key for a statistic, finds the
-    player with the highest value for that statistic, and returns a formatted string with information
-    about that player.
-    
-    :param lista_jugadores: A list of dictionaries representing players and their statistics
-    :type lista_jugadores: list[dict]
-    :param clave_estadisticas: The parameter "clave_estadisticas" is a string that represents the key or
-    name of a specific statistic in the dictionary of statistics for each player in the list of players.
-    This function is designed to find the player with the highest value for this specific statistic and
-    display their information in a formatted message
-    :type clave_estadisticas: str
-    :return: a formatted string message that includes information about the player with the highest
-    value for the specified statistic key.
+    Muestra la información del jugador con la mayor estadística en una clave de estadísticas específica en una lista de jugadores.
+    Recibe:
+        lista_jugadores (list[dict]): Lista de diccionarios que contiene información de los jugadores.
+        clave_estadisticas (str): La clave de estadística a considerar para encontrar al jugador con la mayor estadística.
+    Retorna:
+        None
     """
     jugador_mayor_clave = jugador_mayor_estadistica(lista_jugadores, clave_estadisticas)
     for jugador in lista_jugadores:
@@ -368,19 +324,14 @@ def mostrar_jugador_por_clave_estadistica(lista_jugadores: list[dict], clave_est
                     
 def comparacion_valores_estadisticas(lista_jugadores: list[dict], key: str, valor_comparacion: int) -> list[dict]:
     """
-    This function takes a list of dictionaries representing players and returns a new list of players
-    whose statistics for a given key are greater than a specified value.
-    
-    :param lista_jugadores: A list of dictionaries representing players and their statistics
-    :type lista_jugadores: list[dict]
-    :param key: The key parameter is a string that represents the specific statistic that we want to
-    compare for each player. For example, it could be "rebotes" (rebounds) or "asistencias" (assists)
-    :type key: str
-    :param valor_comparacion: An integer value that will be used to compare against the value of the key
-    in the "estadisticas" dictionary of each player in the "lista_jugadores" list
-    :type valor_comparacion: int
-    :return: a list of dictionaries containing information about players whose statistical value for a
-    given key is greater than a specified comparison value.
+    Compara los valores de una estadística específica en una lista de jugadores y devuelve una lista de jugadores
+    cuyos valores en esa estadística son mayores que un valor de comparación dado.
+    Recibe:
+        lista_jugadores (list[dict]): Lista de diccionarios que contiene información de los jugadores.
+        key (str): La clave de estadística a comparar.
+        valor_comparacion (int): El valor de comparación.
+    Retorna:
+        list[dict]: Una nueva lista de jugadores cuyos valores en la estadística son mayores que el valor de comparación.
     """
     if lista_jugadores:
         jugadores_mayores = []
@@ -394,15 +345,12 @@ def comparacion_valores_estadisticas(lista_jugadores: list[dict], key: str, valo
 
 def mostrar_jugador_estadisticas(lista_jugadores: list[dict], key:str) -> None:
     """
-    This function takes a list of dictionaries representing players and a key, and prints out each
-    player's name, position, and the value of the specified key in their statistics dictionary.
-    
-    :param lista_jugadores: A list of dictionaries representing players and their statistics
-    :type lista_jugadores: list[dict]
-    :param key: The "key" parameter is a string that represents the specific statistic that we want to
-    display for each player. It is used to access the corresponding value in the "estadisticas"
-    dictionary of each player
-    :type key: str
+    Muestra las estadísticas de los jugadores en la lista.
+    Recibe:
+        lista_jugadores (list[dict]): Lista de diccionarios con información de jugadores.
+        key (str): Estadística que se desea mostrar.
+    Retorna:
+        None
     """
     if lista_jugadores:
         i = 0
@@ -416,23 +364,17 @@ def mostrar_jugador_estadisticas(lista_jugadores: list[dict], key:str) -> None:
 
 def validar_comparacion_estadistica(lista_jugadores: list[dict], key: str, valor_comparacion: int) -> bool:
     """
-    This function validates if the highest value of a specific key in a list of dictionaries is greater
-    than or equal to a given value.
-    
-    :param lista_jugadores: A list of dictionaries representing players and their statistics
-    :type lista_jugadores: list[dict]
-    :param key: The key is a string that represents the statistic that we want to compare. For example,
-    if we want to compare the number of goals scored by each player, the key would be "goals"
-    :type key: str
-    :param valor_comparacion: The value to compare the key's value against in the function. It is an
-    integer
-    :type valor_comparacion: int
-    :return: a boolean value (True or False) depending on whether the highest value of a given key in a
-    list of dictionaries is greater than or equal to a given comparison value.
+    Valida si el numero a comparar es mayor al mayor valor de estadisticas a comparar.
+    Recibe:
+        lista_jugadores (list[dict]): Lista de diccionarios con información de jugadores.
+        key (str): Estadística que se desea comparar.
+        valor_comparacion (int): Valor de comparación.
+    Retorna:
+        bool: True si alguna estadística es mayor o igual al valor de comparación, False en caso contrario.
     """
     if lista_jugadores:
         lista_copia = lista_jugadores.copy()
-        dict_mayor_key_estadistica = jugador_mayor_estadistica(lista_jugadores, key)
+        dict_mayor_key_estadistica = jugador_mayor_estadistica(lista_copia, key)
         if dict_mayor_key_estadistica[key] >= valor_comparacion:
             return True
         else:
@@ -441,13 +383,11 @@ def validar_comparacion_estadistica(lista_jugadores: list[dict], key: str, valor
 
 def comparacion_logros(lista_jugadores: list[dict]) -> dict:
     """
-    The function takes a list of dictionaries representing players and returns the player with the most
-    achievements.
-    
-    :param lista_jugadores: a list of dictionaries representing players, where each dictionary contains
-    information about a player, including their name and a list of their achievements or "logros"
-    :type lista_jugadores: list[dict]
-    :return: a dictionary that represents the player with the most achievements in a list of players.
+    Compara los logros de los jugadores y devuelve el jugador con la mayor cantidad de logros.
+    Recibe:
+        lista_jugadores (list[dict]): Lista de diccionarios con información de jugadores.
+    Retorna:
+        dict: Diccionario que representa al jugador con la mayor cantidad de logros.
     """
     if lista_jugadores:
         lista_copia = lista_jugadores.copy()
@@ -461,22 +401,13 @@ def comparacion_logros(lista_jugadores: list[dict]) -> dict:
 
 def ranking_por_estadistica(lista_jugadores: list[dict], estadistica_ranking: str, regex_nombre: str) -> int:
     """
-    This function takes a list of players with their statistics, a specific statistic to rank by, and a
-    regular expression for a player's name, and returns the ranking of that player based on the
-    specified statistic.
-    
-    :param lista_jugadores: A list of dictionaries representing players and their statistics
-    :type lista_jugadores: list[dict]
-    :param estadistica_ranking: The parameter "estadistica_ranking" is a string that represents the
-    specific statistic by which the players will be ranked. For example, it could be "puntos" (points),
-    "rebotes" (rebounds), or "asistencias" (assists)
-    :type estadistica_ranking: str
-    :param regex_nombre: The parameter "regex_nombre" is a string that contains a regular expression
-    used to match the name of a player in the list of players. The function uses this regular expression
-    to find the player's name in the list and determine their ranking based on the specified statistic
-    :type regex_nombre: str
-    :return: the ranking index (position) of a player in a list of players based on a specific statistic
-    and a regular expression for the player's name.
+    Obtiene el ranking de un jugador basado en una estadística específica y un patrón de nombre.
+    Recibe:
+        lista_jugadores (list[dict]): Lista de diccionarios con información de jugadores.
+        estadistica_ranking (str): Estadística utilizada para el ranking.
+        regex_nombre (str): Patrón de nombre del jugador para buscar en el ranking.
+    Retorna:
+        int: Posición del jugador en el ranking (+1 para lograr una lista valida de rankings).
     """
     if lista_jugadores:
         lista_copia = lista_jugadores.copy()
@@ -491,17 +422,13 @@ def ranking_por_estadistica(lista_jugadores: list[dict], estadistica_ranking: st
 
 def crear_dict_estadistica_jugador(lista_jugadores: list[dict],regex_nombre: str) -> dict:
     """
-    This function creates a dictionary with statistics for a specific player from a list of players,
-    based on a regular expression for the player's name.
-    
-    :param lista_jugadores: A list of dictionaries representing basketball players and their statistics
-    :type lista_jugadores: list[dict]
-    :param regex_nombre: A regular expression string used to match the name of the player in the list of
-    players
-    :type regex_nombre: str
-    :return: a dictionary with the statistics of a player whose name matches a given regular expression,
-    based on a list of players' dictionaries. The dictionary includes the player's name, total points
-    ranking, total rebounds ranking, total assists ranking, and total steals ranking.
+    Crea un diccionario con las estadísticas de un jugador específico.
+    Recibe:
+        lista_jugadores (list[dict]): Lista de diccionarios con información de jugadores.
+        regex_nombre (str): Expresión regular para buscar el nombre del jugador.
+    Retorna:
+        dict: Diccionario con las estadísticas del jugador encontrado. Si no se encuentra el jugador,
+        el diccionario estará vacío.
     """
     if lista_jugadores:
         lista_copia = lista_jugadores.copy()
@@ -509,7 +436,7 @@ def crear_dict_estadistica_jugador(lista_jugadores: list[dict],regex_nombre: str
         for jugador in lista_copia:
             if regex_nombre in jugador["nombre"]:
                 dict_jugador["nombre"] = jugador["nombre"]
-                dict_jugador["ranking_puntos_totales"] = ranking_por_estadistica(lista_copia,"puntos_totales",jugador["nombre"])
+                dict_jugador["puntos_totales"] = ranking_por_estadistica(lista_copia,"puntos_totales",jugador["nombre"])
                 dict_jugador["rebotes_totales"] = ranking_por_estadistica(lista_copia,"rebotes_totales",jugador["nombre"])
                 dict_jugador["asistencias_totales"] = ranking_por_estadistica(lista_copia,"asistencias_totales",jugador["nombre"])
                 dict_jugador["robos_totales"] = ranking_por_estadistica(lista_copia,"robos_totales",jugador["nombre"])
@@ -517,7 +444,11 @@ def crear_dict_estadistica_jugador(lista_jugadores: list[dict],regex_nombre: str
 
 def lista_dict(lista_jugadores: list) -> list[dict]:
     """
-    Crea un lista de diccionarios donde cada uno corresponde a un jugador y su ranking
+    Crea una lista de diccionarios donde cada uno corresponde a un jugador y el ranking de sus estadísticas.
+    Recibe:
+        lista_jugadores (list): Lista de jugadores.
+    Retorna:
+        list[dict]: Lista de diccionarios con las estadísticas de cada jugador.
     """
     lista_dict = []
     dic_jugador = {}
@@ -528,16 +459,17 @@ def lista_dict(lista_jugadores: list) -> list[dict]:
 
 def generar_data_csv(lista_diccionarios):
     """
-    The function generates a CSV string from a list of dictionaries containing player statistics.
-    
-    :param lista_diccionarios: a list of dictionaries, where each dictionary represents a player and
-    contains their name, total points, total rebounds, total assists, and total steals
-    :return: a string in CSV format that includes the data of the players in the input list of
-    dictionaries. The first row of the CSV contains the headers "Jugador, Puntos, Rebotes, Asistencias,
-    Robos", and each subsequent row contains the data of a player, with their name, total points, total
-    rebounds, total assists, and total steals separated by commas.
+    La función genera una cadena CSV a partir de una lista de diccionarios que contienen estadísticas de jugadores.
+    Recibe:
+    Una lista de diccionarios, donde cada diccionario representa a un jugador y contiene su nombre,
+    puntos totales, rebotes totales, asistencias totales y robos totales.
+    Retorna:
+    Una cadena en formato CSV que incluye los datos de los jugadores en la lista de diccionarios de entrada.
+    La primera fila del CSV contiene los encabezados "Jugador, Puntos, Rebotes, Asistencias, Robos",
+    y cada fila subsiguiente contiene los datos de un jugador, con su nombre, puntos totales, rebotes totales,
+    asistencias totales y robos totales separados por comas.
     """
     cadena_csv = "Jugador, Puntos, Rebotes, Asistencias, Robos"
     for jugador in lista_diccionarios:
-        cadena_csv += "\n{0}, {1}, {2}, {3}, {4}".format(jugador['nombre'],jugador['ranking_puntos_totales'],jugador['rebotes_totales'],jugador['asistencias_totales'],jugador['robos_totales'])
+        cadena_csv += "\n{0}, {1}, {2}, {3}, {4}".format(jugador['nombre'],jugador['puntos_totales'],jugador['rebotes_totales'],jugador['asistencias_totales'],jugador['robos_totales'])
     return cadena_csv
