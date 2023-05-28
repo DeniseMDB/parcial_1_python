@@ -10,25 +10,26 @@ def print_menu():
     2 - Seleccionar jugador por indice y mostrar sus estadisticas
     3 - Guardar estadisticas en formato CSV
     4 - Buscar jugador por nombre y mostrar sus logros
-    5 - Calcular y mostrar el promedio de puntos por partido de todo el equipo del Dream Team,
+    5 - Promedio de puntos por partido de todo el equipo del Dream Team,
         ordenado por nombre de manera ascendente.
     6 - Buscar si el jugador es miembro del Salón de la Fama del Baloncesto.
-    7 - Calcular y mostrar el jugador con la mayor cantidad de rebotes totales.
-    8 - Calcular y mostrar el jugador con el mayor porcentaje de tiros de campo.
-    9 - Calcular y mostrar el jugador con la mayor cantidad de asistencias totales.
+    7 - Jugador con la mayor cantidad de rebotes totales.
+    8 - Jugador con el mayor porcentaje de tiros de campo.
+    9 - Jugador con la mayor cantidad de asistencias totales.
     10 - Mostrar jugadores que han promediado más puntos por partido que un valor ingresado.
     11 - Mostrar jugadores que han promediado más rebotes por partido que un valor ingresado.
     12 - Mostrar jugadores que han promediado más asistencias por partido que un valor ingresado.
-    13 - Calcular y mostrar el jugador con la mayor cantidad de robos totales.
-    14 - Calcular y mostrar el jugador con la mayor cantidad de bloqueos totales.
+    13 - Jugador con la mayor cantidad de robos totales.
+    14 - Jugador con la mayor cantidad de bloqueos totales.
     15 - Mostrar los jugadores que hayan tenido un porcentaje de tiros libres superior a un valor ingresado.
-    16 - Calcular y mostrar el promedio de puntos por partido del equipo excluyendo al 
+    16 - Promedio de puntos por partido del equipo excluyendo al 
         jugador con la menor cantidad de puntos por partido. 
-    17 - Calcular y mostrar el jugador con la mayor cantidad de logros obtenidos
+    17 - Jugador con la mayor cantidad de logros obtenidos
     18 - Mostrar los jugadores que hayan tenido un porcentaje de tiros triples superior a un valor ingresado.
-    19 - Calcular y mostrar el jugador con la mayor cantidad de temporadas jugadas
+    19 - Jugador con la mayor cantidad de temporadas jugadas
     20 - Mostrar los jugadores , ordenados por posición en la cancha, que hayan tenido un porcentaje
     de tiros de campo superior a un valor ingresado.
+    21 - Generar un archivo excel (csv) con el ranking de estadisticas de los jugadores.
     """
 
     print(menu)
@@ -65,10 +66,15 @@ def ejercicios_examen():
             case 3:
                 accion = "El archivo Estadisticas_{0}.csv ha sido creado.".format(nombre_jugador)
                 lista_copia = lista_jugadores.copy()
-                lib.imprimir_mensaje(accion, "Success")
-                nombre_archivo = "C:\\Users\\Denise\\Documents\\1 Cuatri\\Programacion_1\\parcial_1\\Estadisticas_{0}.csv".format(nombre_jugador)
-                lib.exportar_csv(archivo_estadisticas,nombre_archivo)
-                lib.limpiar_consola()
+                if archivo_estadisticas:
+                    lib.imprimir_mensaje(accion, "Info")
+                    nombre_archivo = "C:\\Users\\Denise\\Documents\\1 Cuatri\\Programacion_1\\parcial_1\\Estadisticas_{0}.csv".format(nombre_jugador)
+                    lib.exportar_csv(archivo_estadisticas,nombre_archivo)
+                    lib.limpiar_consola()
+                else:
+                    accion = "Debera elegir primero la opcion 2 para seleccionar un jugador"
+                    lib.imprimir_mensaje(accion, "Error")
+                    lib.limpiar_consola()
             case 4:
                 accion = "Logros del jugador elegido :"
                 lista_copia = lista_jugadores.copy()
@@ -240,14 +246,13 @@ def ejercicios_examen():
             case 21:
                 accion = "Se ha creado el archivo de Ranking de estadisticas"
                 lista_copia = lista_jugadores.copy()
-                lib.imprimir_mensaje(accion,"Success" )
+                lib.imprimir_mensaje(accion,"Info" )
                 lista_diccionarios = lib.lista_dict(lista_jugadores)
                 archivo_csv = lib.generar_data_csv(lista_diccionarios)
                 nombre_archivo = "C:\\Users\\Denise\\Documents\\1 Cuatri\\Programacion_1\\parcial_1\\Ranking_de_estadisticas.csv"
                 lib.exportar_csv(archivo_csv,nombre_archivo)
                 lib.limpiar_consola()
             case _:
-                # Opción no reconocida, no se realiza ninguna acción
-                pass
+                break
 
 ejercicios_examen()
