@@ -1,11 +1,13 @@
 import json
 import re
 import os
-
+ruta_json = r'C:\\Users\\Denise\\Documents\\1 Cuatri\\Programacion_1\\parcial_1\\dt.json'
 
 def leer_archivo(path: str) -> list:
     with open(path, 'r') as file:
         return json.load(file)["jugadores"]
+    
+lista_jugadores = leer_archivo(ruta_json)
     
 _b_red: str = '\033[41m'  
 _b_green: str = '\033[42m'
@@ -208,7 +210,7 @@ def indice_min_max(lista_jugadores: list[dict], key: str, modo: str, key_2:str=1
                     i_max_min = i
     return i_max_min
 
-def sort_asc_desc(lista_jugadores: list, key: str, modo: str, key_2: str=1)->list:
+def sort_asc_desc(lista_jugadores: list, key: str, modo: str, key_2: str=1) -> list:
     """
     Ordena una lista de jugadores en orden ascendente o descendente según una clave específica.
     Recibe:
@@ -457,7 +459,7 @@ def lista_dict(lista_jugadores: list) -> list[dict]:
         lista_dict.append(dic_jugador)
     return lista_dict
 
-def generar_data_csv(lista_diccionarios):
+def generar_data_csv(lista_diccionarios) -> str:
     """
     La función genera una cadena CSV a partir de una lista de diccionarios que contienen estadísticas de jugadores.
     Recibe:
@@ -473,3 +475,158 @@ def generar_data_csv(lista_diccionarios):
     for jugador in lista_diccionarios:
         cadena_csv += "\n{0}, {1}, {2}, {3}, {4}".format(jugador['nombre'],jugador['puntos_totales'],jugador['rebotes_totales'],jugador['asistencias_totales'],jugador['robos_totales'])
     return cadena_csv
+
+
+# 1------ Determinar la cantidad de jugadores que hay por cada posición. --------
+# Ejemplo:
+# Base: 2
+# Alero: 3
+# ...
+
+def cant_por_posicion(lista_jugadores: list[dict]) -> list[dict]:
+    """
+    La función cuenta el número de jugadores en una lista por su posición y devuelve un diccionario con
+    el recuento de cada posición.
+    
+    :param lista_jugadores: Una lista de diccionarios que representan a los jugadores de un equipo
+    deportivo. Cada diccionario contiene información sobre un jugador, incluida su posición en el equipo
+    :type lista_jugadores: list[dict]
+    :return: un diccionario donde las claves son las posiciones de los jugadores y los valores son el
+    número de jugadores en cada posición.
+    """
+    if lista_jugadores:
+        dict_posicion = {}
+        for jugador in lista_jugadores:
+            posicion = jugador["posicion"]
+            if posicion in dict_posicion:
+                dict_posicion[posicion] += 1
+            else:
+                dict_posicion[posicion] = 1
+        return dict_posicion
+
+
+# 2---- Mostrar la lista de jugadores ordenadas por la cantidad de All-Star de forma descendente.----
+#  La salida por pantalla debe tener un formato similar a este:
+# Michael Jordan (14 veces All Star)
+# Magic Johnson (12 veces All-Star)
+
+
+def lista_all_star(lista_jugadores: list[dict]):
+    """
+    Esta función toma una lista de diccionarios que contienen información sobre jugadores de baloncesto
+    y devuelve una lista de diccionarios que contienen los nombres de los jugadores que han sido
+    All-Stars y la cantidad de veces que han sido seleccionados.
+    
+    :param lista_jugadores: una lista de diccionarios que representan a jugadores de baloncesto, donde
+    cada diccionario contiene información sobre un jugador, como su nombre, equipo y estadísticas
+    :type lista_jugadores: list[dict]
+    :return: una lista de diccionarios, donde cada diccionario contiene el nombre de un jugador que ha
+    sido All-Star varias veces y la cantidad de veces que ha sido All-Star.
+    """
+    lista_all = []
+    for jugador in lista_jugadores:
+        logro = buscar_nombre_logros(lista_jugadores, jugador["nombre"])
+        for items in logro:
+            cadena_items = "{0}".format(items)
+            if re.search(r"\d+ veces All-Star", cadena_items):
+                dict_jugador = {jugador["nombre"]: cadena_items}
+                lista_all.append(dict_jugador)
+    return lista_all
+    
+lista_stars = lista_all_star(lista_jugadores)
+
+def obtener_cantidad_all_star(diccionario_star: dict) -> int:
+    """
+    La función "obtener_cantidad_all_star" toma un diccionario de jugadores y sus estadísticas, extrae
+    el número de apariciones en el All-Star del primer jugador del diccionario y lo devuelve como un
+    número entero.
+    
+    :param diccionario_star: Un diccionario que contiene información sobre las apariciones All-Star de
+    un jugador de baloncesto. Las claves son el nombre del jugador y los valores son cadenas que
+    contienen el número de apariciones en el All-Star e información adicional
+    :type diccionario_star: dict
+    :return: un valor entero que representa el número de juegos All-Star jugados por un jugador.
+    """
+    jugador = list(diccionario_star.keys())[0]
+    cantidad_all_star = int(diccionario_star[jugador].split()[0])
+    return cantidad_all_star
+
+def ordenar_por_all_star(lista_stars: list) -> list:
+    """
+    Esta función ordena una lista de elementos según la cantidad de calificaciones de "estrellas" que
+    tienen, en orden descendente.
+    
+    :param lista_stars: Una lista de artículos que tienen un atributo llamado "all_star". La función
+    "ordenar_por_all_star" ordena esta lista en orden descendente según el valor del atributo "all_star"
+    de cada artículo
+    :type lista_stars: list
+    :return: una lista ordenada de elementos de la lista de entrada, ordenados en orden descendente
+    según el número de ocurrencias de "todas las estrellas" en cada elemento.
+    """
+    lista_ordenada = sorted(lista_stars, key=obtener_cantidad_all_star, reverse=True)
+    return lista_ordenada
+
+
+lista_ordenada = (ordenar_por_all_star(lista_stars))
+
+def printear_all_star(lista: list[dict])->None:
+    for jugador in lista:
+        for key,value in jugador.items():
+            print("{0} ({1})".format(key,value))
+
+printear_all_star(lista_ordenada)
+
+
+def crear_lista_estadisticas(lista_jugadores: list[dict]) -> list[dict]:
+    """
+    La función crea una lista de diccionarios de estadísticas a partir de una lista de diccionarios de
+    jugadores.
+    
+    :param lista_jugadores: Una lista de diccionarios que representan a los jugadores y sus
+    estadísticas. Cada diccionario contiene claves para "nombre" (nombre del jugador) y "estadisticas"
+    (estadísticas del jugador)
+    :type lista_jugadores: list[dict]
+    :return: una lista de diccionarios que contienen las estadísticas de cada jugador en la lista de
+    entrada de jugadores.
+    """
+    lista_estadisticas = []
+    for jugador in lista_jugadores:
+        estadistica = jugador["estadisticas"]
+        lista_estadisticas.append(estadistica)
+    return lista_estadisticas
+
+
+
+# 3 ---- Determinar qué jugador tiene las mejores estadísticas en cada valor. La salida por pantalla debe tener un formato similar a este:
+# Mayor cantidad de temporadas: Karl Malone (19)
+# Mayor cantidad de puntos totales: Karl Malon (36928)
+
+def mejores_estadisticas(lista_jugadores: list[dict], lista_estadisticas: list[dict]) -> None:
+    """
+    La función "mejores_estadisticas" toma una lista de jugadores y una lista de estadísticas, y
+    devuelve un mensaje indicando el jugador con el valor más alto para cada estadística.
+    
+    :param lista_jugadores: Una lista de diccionarios que representan a los jugadores y sus estadísticas
+    :type lista_jugadores: list[dict]
+    :param lista_estadisticas: Una lista de diccionarios que contienen las estadísticas a analizar
+    :type lista_estadisticas: list[dict]
+    :return: una variable de cadena llamada "mensaje" que contiene información sobre el jugador con el
+    valor más alto para cada estadística en el parámetro "lista_estadisticas".
+    """
+    lista_jugador_maximo = {}
+    for estadistica in lista_estadisticas:
+        mensaje = ""
+        for key in estadistica.keys():
+            jugador_mayor_clave = jugador_mayor_estadistica(lista_jugadores, key)
+            for jugador in lista_jugadores:
+                dic_estadistica = jugador["estadisticas"]
+                if dic_estadistica[key] == jugador_mayor_clave[key]:
+                    mensaje += "Mayor cantidad de {0}: {1} ({2})\n".format(formatear_estadistica(lista_jugadores,key), jugador["nombre"], jugador["estadisticas"][key])
+    return mensaje
+    
+
+
+
+
+
+
